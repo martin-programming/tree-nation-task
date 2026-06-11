@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -16,12 +17,13 @@ use Override;
  */
 class Visit extends Model
 {
+    use HasFactory;
+
     public const string|null UPDATED_AT = null;
 
     /**
      * @var array<string>
      */
-    #[Override]
     protected $guarded = [
         'id',
         'created_at',
