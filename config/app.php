@@ -125,4 +125,6 @@ return [
 
     'visits_per_tree' => (int) env('VISITS_PER_TREE', 10),
 
+    'api_key' => env('API_KEY'),
+
 ];
