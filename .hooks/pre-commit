@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -e
+
+# Collect staged PHP files
+STAGED_PHP=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.php$' || true)
+
+if [ -z "$STAGED_PHP" ]; then
+    exit 0
+fi
+
+echo "Running Pint on staged PHP files..."
+
+# Stash unstaged changes so Pint only sees what is being committed
+git stash push --quiet --keep-index --message "pre-commit pint stash"
+
+PINT_EXIT=0
+vendor/bin/pint $STAGED_PHP || PINT_EXIT=$?
+
+# Re-stage any files Pint reformatted
+echo "$STAGED_PHP" | xargs git add
+
+# Restore unstaged changes
+git stash pop --quiet || true
+
+if [ $PINT_EXIT -ne 0 ]; then
+    echo "Pint found unfixable issues. Please review the output above."
+    exit 1
+fi
