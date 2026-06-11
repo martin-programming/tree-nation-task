@@ -12,9 +12,6 @@ if [ -z "${SKIP_SETUP}" ]; then
         cp .env.example .env
         php artisan key:generate --force --ansi
     fi
-
-    echo "==> Running database migrations..."
-    php artisan migrate --force --ansi
 fi
 
 exec "$@"
