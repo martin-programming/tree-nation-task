@@ -7,7 +7,6 @@ services:
       - "8000:8000"
     volumes:
       - .:/var/www/html
-      - vendor:/var/www/html/vendor
     environment:
       - DB_HOST=postgres
     depends_on:
@@ -47,6 +46,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  vendor:
   node_modules:
   postgres_data:
