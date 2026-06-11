@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Contracts\LogoutResponse;
@@ -32,11 +35,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureRateLimiting();
     }
 
     /**
      * Configure default behaviors for production-ready applications.
      */
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('visits', fn (Request $request) => Limit::perMinute(60)->by($request->bearerToken() ?? $request->ip()));
+    }
+
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
