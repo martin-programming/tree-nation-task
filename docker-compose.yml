@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    environment:
+      - DB_HOST=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  vite:
+    image: node:22-alpine
+    working_dir: /var/www/html
+    command: sh -c "npm install --prefer-offline && npm run dev"
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/var/www/html
+      - node_modules:/var/www/html/node_modules
+    environment:
+      VITE_HMR_HOST: localhost
+      NODE_ENV: development
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-tree_nation}
+      POSTGRES_USER: ${DB_USERNAME:-tree_nation}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-tree_nation} -d ${DB_DATABASE:-tree_nation}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  vendor:
+  node_modules:
+  postgres_data:
