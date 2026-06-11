@@ -112,6 +112,18 @@ The dashboard shows visits per hour (last 24 h), total visits today, trees plant
 
 ---
 
+## API docs
+
+Interactive API documentation (OpenAPI / Stoplight Elements) is available at:
+
+```
+http://localhost:8000/docs/api
+```
+
+The raw OpenAPI spec is served at `http://localhost:8000/docs/api.json`.
+
+---
+
 ## API reference
 
 ### Record a visit

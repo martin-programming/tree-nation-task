@@ -12,7 +12,19 @@ use Throwable;
 class VisitController extends Controller
 {
     /**
+     * Record a visit
+     *
+     * Called by the physical device each time a customer is detected entering the shop.
+     * Creates the customer on first encounter. Increments `trees_planted` every
+     * `VISITS_PER_TREE` visits for that customer.
+     *
      * @throws Throwable
+     *
+     * @response 201 {
+     *   "visit_id": 1,
+     *   "customer_id": 1,
+     *   "visited_at": "2026-06-11T14:30:00+00:00"
+     * }
      */
     public function store(RecordVisitRequest $request, RecordVisit $action): JsonResponse
     {
